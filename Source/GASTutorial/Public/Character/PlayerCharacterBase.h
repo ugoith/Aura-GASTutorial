@@ -13,5 +13,6 @@ UCLASS()
 class GASTUTORIAL_API APlayerCharacterBase : public ABaseCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	APlayerCharacterBase();
 };

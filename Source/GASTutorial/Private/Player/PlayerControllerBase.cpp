@@ -4,6 +4,7 @@
 #include "Player/PlayerControllerBase.h"
 
 #include "EnhancedInputSubsystems.h"
+#include"EnhancedInputComponent.h"
 
 APlayerControllerBase::APlayerControllerBase()
 {
@@ -31,4 +32,26 @@ void APlayerControllerBase::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);//游标不锁定至视口,方便调试
 	InputModeData.SetHideCursorDuringCapture(false);//鼠标按下时,不隐藏游标
 	SetInputMode(InputModeData);
+}
+
+void APlayerControllerBase::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	UEnhancedInputComponent* EnhancedInputComponent=CastChecked<UEnhancedInputComponent>(InputComponent);
+	EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerControllerBase::Move);
+}
+
+void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
+{
+	const FVector2D InputAxisVector=InputActionValue.Get<FVector2D>();
+	const FRotator Rotation=GetControlRotation();
+	const FRotator YawRotation(0.0f,Rotation.Yaw,0.0f);//获取yaw旋转
+	const FVector ForwardDirection=FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);//获取旋转的前向向量
+	const FVector RightDirection=FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	if (APawn* ControledPawn=GetPawn<APawn>())
+	{
+		ControledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
+		ControledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
+	}
 }
