@@ -5,10 +5,17 @@
 
 #include "EnhancedInputSubsystems.h"
 #include"EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 
 APlayerControllerBase::APlayerControllerBase()
 {
 	bReplicates = true;
+}
+
+void APlayerControllerBase::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+	CursorTrace();
 }
 
 void APlayerControllerBase::BeginPlay()
@@ -53,5 +60,44 @@ void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
 	{
 		ControledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
 		ControledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
+	}
+}
+
+void APlayerControllerBase::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECC_Visibility,false,CursorHit);
+	if (CursorHit.bBlockingHit)
+	{
+		LastActor=ThisActor;//两个变量都是IEnemyInterface指针。记录上一个Actor的EnemyInterface指针
+		ThisActor=Cast<IEnemyInterface>(CursorHit.GetActor());
+		if (LastActor==nullptr)
+		{
+			if (ThisActor!=nullptr)
+			{
+				ThisActor->HighLightActor();//挂载接口的纯虚函数,即调用该Actor实现的接口函数
+			}
+		}
+		else
+		{
+			if (ThisActor==nullptr)
+			{
+				LastActor->UnHighLightActor();
+			}
+			
+			else if (ThisActor!=nullptr)
+			{
+				if (LastActor!=ThisActor)
+				{
+					LastActor->UnHighLightActor();
+					ThisActor->HighLightActor();
+				}
+			}
+			
+		}
+	}
+	else
+	{
+		return;
 	}
 }
