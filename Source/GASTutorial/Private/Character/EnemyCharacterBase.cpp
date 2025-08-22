@@ -3,12 +3,23 @@
 
 #include "Character/EnemyCharacterBase.h"
 
+#include "GASTutorial/GASTutorial.h"
+
+AEnemyCharacterBase::AEnemyCharacterBase()
+{
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
+}
+
 void AEnemyCharacterBase::HighLightActor()
 {
-	bHightlighted=true;
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->CustomDepthStencilValue=CUSTOM_DEPTH_RED;
+	Weapon->SetRenderCustomDepth(true);
+	Weapon->CustomDepthStencilValue=CUSTOM_DEPTH_RED;
 }
 
 void AEnemyCharacterBase::UnHighLightActor()
 {
-	bHightlighted=false;
+	GetMesh()->SetRenderCustomDepth(false);
+	Weapon->SetRenderCustomDepth(false);
 }

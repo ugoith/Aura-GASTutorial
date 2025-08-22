@@ -10,13 +10,14 @@
 /**
  * 
  */
+
 UCLASS()
 class GASTUTORIAL_API AEnemyCharacterBase : public ABaseCharacter,public IEnemyInterface
 {
 	GENERATED_BODY()
 public:
+	AEnemyCharacterBase();
 	virtual void HighLightActor() override;//纯虚函数覆写
 	virtual void UnHighLightActor() override;
-	UPROPERTY(BlueprintReadOnly)
-	bool bHightlighted=false;
+	
 };
