@@ -8,6 +8,11 @@
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
+	AbilitySystemComponent=CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);//网络
+	AttributeSet=CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	/*设置网络复制模式*/
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 void AEnemyCharacterBase::HighLightActor()
@@ -22,4 +27,11 @@ void AEnemyCharacterBase::UnHighLightActor()
 {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AEnemyCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+	check(AbilitySystemComponent);//拥有者和发起者(Avatar，也即Instigator)都是自己
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 }

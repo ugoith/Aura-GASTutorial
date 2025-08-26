@@ -15,4 +15,8 @@ class GASTUTORIAL_API APlayerCharacterBase : public ABaseCharacter
 	GENERATED_BODY()
 public:
 	APlayerCharacterBase();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	private:
+	void InitAbilityActorInfo();
 };

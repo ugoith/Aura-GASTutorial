@@ -14,6 +14,16 @@ ABaseCharacter::ABaseCharacter()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);//设置武器碰撞为无碰撞
 }
 
+UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+UAttributeSet* ABaseCharacter::GetAttributeSet() const
+{
+	return AttributeSet;
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {

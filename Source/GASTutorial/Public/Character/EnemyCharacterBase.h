@@ -19,5 +19,6 @@ public:
 	AEnemyCharacterBase();
 	virtual void HighLightActor() override;//纯虚函数覆写
 	virtual void UnHighLightActor() override;
-	
+protected:
+	virtual void BeginPlay() override;
 };
