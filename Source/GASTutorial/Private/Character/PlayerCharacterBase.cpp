@@ -39,6 +39,6 @@ void APlayerCharacterBase::InitAbilityActorInfo()
 	//拥有者为AAuraPlayerState,Avatar即Instigator为自己
 	AuraPlayerState->AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState,this);
 	//PlayerState的AbilitySystemComponent赋值为自身，服务器处理PlayerState后将值传给自身的AbilitySystemComponet
-	AbilitySystemComponent=AuraPlayerState->AbilitySystemComponent;
-	AttributeSet=AuraPlayerState->AttributeSet;
+	AbilitySystemComponent = AuraPlayerState->AbilitySystemComponent;
+	AttributeSet=AuraPlayerState->GetAttributeSet();
 }

@@ -3,6 +3,7 @@
 
 #include "Character/EnemyCharacterBase.h"
 
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "GASTutorial/GASTutorial.h"
 
 AEnemyCharacterBase::AEnemyCharacterBase()
@@ -10,7 +11,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility,ECR_Block);
 	AbilitySystemComponent=CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);//网络
-	AttributeSet=CreateDefaultSubobject<UAttributeSet>("AttributeSet");
+	AttributeSet=CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 	/*设置网络复制模式*/
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
