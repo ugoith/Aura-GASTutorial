@@ -5,6 +5,9 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerState.h"
+#include "Player/PlayerControllerBase.h"
+#include "UI/HUD/AuraHUD.h"
+
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -31,7 +34,7 @@ void APlayerCharacterBase::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	InitAbilityActorInfo();
 }
-
+//在角色一旦接受控制和被赋予PlayerState后，初始化所有关于此角色的信息，HUD,PlayerState,Controller，AttributeSet等信息
 void APlayerCharacterBase::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState=GetPlayerState<AAuraPlayerState>();
@@ -41,4 +44,12 @@ void APlayerCharacterBase::InitAbilityActorInfo()
 	//PlayerState的AbilitySystemComponent赋值为自身，服务器处理PlayerState后将值传给自身的AbilitySystemComponet
 	AbilitySystemComponent = AuraPlayerState->AbilitySystemComponent;
 	AttributeSet=AuraPlayerState->GetAttributeSet();
+
+	if (APlayerControllerBase* AuraPlayerController=Cast<APlayerControllerBase>(GetController()))
+	{
+		if (AAuraHUD* AuraHUD= Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+		{
+			AuraHUD->InitOverlay(AuraPlayerController,AuraPlayerState,AbilitySystemComponent,AttributeSet);
+		}
+	}
 }
