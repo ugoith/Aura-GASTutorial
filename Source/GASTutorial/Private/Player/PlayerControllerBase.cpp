@@ -22,7 +22,9 @@ void APlayerControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
 	check(AuraContext);
-	UEnhancedInputLocalPlayerSubsystem* Subsystem=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	ULocalPlayer* LocalPlayer=GetLocalPlayer();
+	check(LocalPlayer);
+	UEnhancedInputLocalPlayerSubsystem* Subsystem=LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	//获取增强输入本地玩家子系统
 
 	check(Subsystem);

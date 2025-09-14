@@ -2,15 +2,18 @@
 
 
 #include "AbilitySystem/AuraAttributeSet.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Engine/NetworkObjectList.h"
+#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
 	UE_LOG(LogTemp,Warning,TEXT("InitProperty"));
-	InitHealth(100.0f);
+	InitHealth(75.0f);
 	InitMaxHealth(100.0f);
-	InitMana(100.0f);
+	InitMana(75.0f);
 	InitMaxMana(100.0f);
 }
 
@@ -21,6 +24,71 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet,MaxHealth,COND_None,REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet,Mana,COND_None,REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet,MaxMana,COND_None,REPNOTIFY_Always);
+}
+
+void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+	if (Attribute==GetHealthAttribute())
+	NewValue=FMath::Clamp(NewValue,0,GetMaxHealth());
+	if (Attribute==GetManaAttribute())
+		NewValue=FMath::Clamp(NewValue,0,GetMaxMana());
+}
+
+void UAuraAttributeSet::SetFEffectProperties(const struct FGameplayEffectModCallbackData& Data,
+	FEffectProperties& Props) const
+{
+	//Data → 当前正在执行的 属性修改回调（比如血量减少）。
+	//EffectSpec → 这个修改来自哪个 GameplayEffect 规格 (Spec)。
+	//GetContext() → 从 Spec 里拿到它的 上下文 (EffectContextHandle)，保存了额外信息。
+	Props.EffectContextHandle=Data.EffectSpec.GetContext();
+	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+	//查看发起者有没有效果
+	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && IsValid(Props.SourceASC->GetAvatarActor()) )
+	{
+		Props.SourceAvatarActor = Props.SourceASC->GetAvatarActor();
+		Props.SourceController=Props.SourceASC->AbilityActorInfo->PlayerController.Get();
+		//若PlayerController没有获取到 且 拥有源发起者
+		if (Props.SourceController==nullptr && Props.SourceAvatarActor!= nullptr)
+		{
+			//把SourceAvatarActor的控制器赋值给空的SourceController，作为新的控制者
+			if (APawn* Pawn=Cast<APawn>(Props.SourceAvatarActor))
+			{
+				Props.SourceController = Pawn->GetController();
+			}		
+		}
+		//如果是玩家控制器，则将控制器的控制的Pawn转换为Character
+		if (Props.SourceController)
+		{
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+			
+		}
+	}
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.GetAvatarActor())
+	{
+		Props.TargetAvatarActor = Data.Target.GetAvatarActor();
+		Props.TargetController =	Data.Target.AbilityActorInfo->PlayerController.Get();
+		Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
+		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
+	}
+	
+}
+/*当一个 GameplayEffect (GE) 修改了 AttributeSet 中的属性后，这个回调会被触发。
+* AbilitySystemComponent 应用了某个 GameplayEffect（比如 GE_Damage，减少角色生命值）。
+GameplayEffectSpec 会修改 AttributeSet 里的某个属性（比如 Health）。
+修改完成后，自动调用 PostGameplayEffectExecute。
+参数 Data 包含了：
+修改了哪个属性
+修改的数值（Magnitude）
+施法者、命中点等上下文信息
+ */
+void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+	FEffectProperties Props;
+	//存相关变化的参数和对应的拥有者、控制器、AbilitySystem等
+	SetFEffectProperties(Data,Props);
+	
 }
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
@@ -42,3 +110,4 @@ void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) 
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet,MaxMana,OldMaxMana);
 }
+

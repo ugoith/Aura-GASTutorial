@@ -4,6 +4,7 @@
 #include "Character/PlayerCharacterBase.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Player/AuraPlayerState.h"
 #include "Player/PlayerControllerBase.h"
 #include "UI/HUD/AuraHUD.h"
@@ -34,6 +35,14 @@ void APlayerCharacterBase::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	InitAbilityActorInfo();
 }
+
+void APlayerCharacterBase::Test_Implementation(float BaseValue, float& Health, float& Mana)
+{
+	UKismetSystemLibrary::PrintString(this,"C++: Hello",
+		true,false,FLinearColor::Red,5.0f,"");
+}
+
+
 //在角色一旦接受控制和被赋予PlayerState后，初始化所有关于此角色的信息，HUD,PlayerState,Controller，AttributeSet等信息
 void APlayerCharacterBase::InitAbilityActorInfo()
 {

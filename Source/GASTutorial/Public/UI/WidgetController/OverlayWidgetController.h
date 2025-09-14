@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
-
+struct FOnAttributeChangeData;
 /**
  * 
  */
@@ -30,4 +30,16 @@ public :
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
 	FOnMaxManaChangedSignature OnMaxManaChanged;
+
+	virtual void BindCallbacksToDependencies() override;
+
+protected:
+	
+	void MaxHealthChanged(const FOnAttributeChangeData& Data);
+	
+	void HealthChanged(const FOnAttributeChangeData& Data);
+
+	void ManaChanged(const FOnAttributeChangeData& Data);
+
+	void MaxManaChanged(const FOnAttributeChangeData& Data);
 };

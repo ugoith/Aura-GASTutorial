@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayEffectExtension.h"
 #include "AuraAttributeSet.generated.h"
 
 /**
@@ -17,6 +18,32 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT(BlueprintType)
+struct FEffectProperties
+{
+	GENERATED_BODY()
+	FEffectProperties(){}
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC;
+	UPROPERTY()
+	AActor* SourceAvatarActor;
+	UPROPERTY()
+	AController* SourceController;
+	UPROPERTY()
+	ACharacter* SourceCharacter;
+	
+	FGameplayEffectContextHandle EffectContextHandle;
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC;
+	UPROPERTY()
+	AActor* TargetAvatarActor;
+	UPROPERTY()
+	AController* TargetController;
+	UPROPERTY()
+	ACharacter* TargetCharacter;
+};
+
 UCLASS()
 class GASTUTORIAL_API UAuraAttributeSet : public UAttributeSet
 {
@@ -24,6 +51,10 @@ class GASTUTORIAL_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	//用于夹值处理
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	//由服务器中的值改变时向各个客户端进行发送并复制
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing=OnRep_Health,Category="Vital Attribute")
 	FGameplayAttributeData Health;
@@ -52,4 +83,8 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
+private:
+
+	void SetFEffectProperties(const struct FGameplayEffectModCallbackData& Data , FEffectProperties& Props) const ;
 };

@@ -15,8 +15,15 @@ class GASTUTORIAL_API APlayerCharacterBase : public ABaseCharacter
 	GENERATED_BODY()
 public:
 	APlayerCharacterBase();
+	
 	virtual void PossessedBy(AController* NewController) override;
+	
 	virtual void OnRep_PlayerState() override;
+	
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent,Category="Test")
+	void Test(float BaseValue,float &Health,float &Mana);
+	virtual void Test_Implementation(float BaseValue,float& Health,float& Mana);
+	
 	private:
 	void InitAbilityActorInfo();
 };
