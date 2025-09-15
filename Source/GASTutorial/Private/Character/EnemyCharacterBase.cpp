@@ -33,6 +33,12 @@ void AEnemyCharacterBase::UnHighLightActor()
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	check(AbilitySystemComponent);//拥有者和发起者(Avatar，也即Instigator)都是自己
+	InitAbilityActorInfo();
+}
+
+void AEnemyCharacterBase::InitAbilityActorInfo()
+{
+	//check(AbilitySystemComponent);//拥有者和发起者(Avatar，也即Instigator)都是自己
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }

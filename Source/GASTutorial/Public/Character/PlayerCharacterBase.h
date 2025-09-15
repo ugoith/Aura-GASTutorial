@@ -23,7 +23,8 @@ public:
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent,Category="Test")
 	void Test(float BaseValue,float &Health,float &Mana);
 	virtual void Test_Implementation(float BaseValue,float& Health,float& Mana);
+
+protected:
 	
-	private:
-	void InitAbilityActorInfo();
+	virtual void InitAbilityActorInfo() override;
 };
