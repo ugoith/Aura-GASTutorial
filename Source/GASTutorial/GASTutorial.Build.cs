@@ -10,7 +10,7 @@ public class GASTutorial : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"EnhancedInput","GameplayAbilities"});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayTags","GameplayTasks","UnLua","Lua" });
+		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayTags","GameplayTasks"/*,"UnLua","Lua" */});
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

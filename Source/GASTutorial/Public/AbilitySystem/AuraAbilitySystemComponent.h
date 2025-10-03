@@ -9,7 +9,6 @@
 /**
  * 
  */
-
 //DECLARE_MULTICAST_DELEGATE_ThreeParams(EffectApplied,)
 
 UCLASS()
