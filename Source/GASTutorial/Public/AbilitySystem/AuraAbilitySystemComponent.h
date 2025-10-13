@@ -10,13 +10,15 @@
  * 
  */
 //DECLARE_MULTICAST_DELEGATE_ThreeParams(EffectApplied,)
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetsTags,const FGameplayTagContainer& /**/ )
 UCLASS()
 class GASTUTORIAL_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 public:
 	void AbilityActorInfoSet();
+
+	FEffectAssetsTags EffectAssetsTags;
 protected:
 	void EffectApplied(UAbilitySystemComponent* ASC,const FGameplayEffectSpec& EffectSpec ,FActiveGameplayEffectHandle ActiveEffectHandle);
 };
