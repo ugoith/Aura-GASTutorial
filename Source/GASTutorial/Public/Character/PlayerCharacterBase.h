@@ -24,7 +24,6 @@ public:
 	void Test(float BaseValue,float &Health,float &Mana);
 	virtual void Test_Implementation(float BaseValue,float& Health,float& Mana);
 
-protected:
-	
+	protected:
 	virtual void InitAbilityActorInfo() override;
 };

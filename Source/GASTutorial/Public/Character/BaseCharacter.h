@@ -29,6 +29,11 @@ protected:
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+	/*使用GameplayEffect来统一处理默认PrimaryAttribute值*/
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 
+	void InitializePrimaryAttributes() const;
+	
 	virtual void InitAbilityActorInfo();
 };

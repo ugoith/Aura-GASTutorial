@@ -18,7 +18,7 @@ class GASTUTORIAL_API AAuraPlayerState : public APlayerState,public IAbilitySyst
 	GENERATED_BODY()
 public:
 	AAuraPlayerState();
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

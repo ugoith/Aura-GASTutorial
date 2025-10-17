@@ -2,7 +2,7 @@
 
 
 #include "Character/BaseCharacter.h"
-
+#include "AbilitySystemComponent.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -29,6 +29,15 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABaseCharacter::InitializePrimaryAttributes() const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(DefaultPrimaryAttributes);
+	const FGameplayEffectContextHandle GECH = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle GES = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttributes,1.0,GECH);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*GES.Data.Get(),GetAbilitySystemComponent());	//const FGameplayEffectSpec &Spec, UAbilitySystemComponent *Target, FPredictionKey PredictionKey
 }
 
 void ABaseCharacter::InitAbilityActorInfo()
