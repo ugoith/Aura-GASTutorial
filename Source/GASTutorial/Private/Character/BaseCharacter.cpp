@@ -24,6 +24,11 @@ UAttributeSet* ABaseCharacter::GetAttributeSet() const
 	return AttributeSet;
 }
 
+int32 ABaseCharacter::GetLevel () const
+{
+	return 0;
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {

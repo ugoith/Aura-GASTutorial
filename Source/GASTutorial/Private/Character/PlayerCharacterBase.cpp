@@ -36,6 +36,13 @@ void APlayerCharacterBase::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+int32 APlayerCharacterBase::GetLevel() const
+{
+	AAuraPlayerState* PS = GetPlayerState<AAuraPlayerState>();
+	check(PS)
+	return PS->GetPlayerLevel();
+}
+
 void APlayerCharacterBase::Test_Implementation(float BaseValue, float& Health, float& Mana)
 {
 	UKismetSystemLibrary::PrintString(this,"C++: Hello",

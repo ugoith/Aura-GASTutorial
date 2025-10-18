@@ -22,6 +22,15 @@ public:
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
+	UFUNCTION(BlueprintCallable)
+	int32 GetPlayerLevel() const;
+private:
+	UPROPERTY(VisibleAnywhere , ReplicatedUsing=OnRep_Level)
+	int32 Level=1;
+	UFUNCTION()
+	void OnRep_Level(int OldLevel);
 };

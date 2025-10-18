@@ -6,10 +6,11 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 class UAttributeSet;
 UCLASS()
-class GASTUTORIAL_API ABaseCharacter : public ACharacter,public IAbilitySystemInterface//挂载AbilitySystem的接口
+class GASTUTORIAL_API ABaseCharacter : public ACharacter,public IAbilitySystemInterface,public ICombatInterface//挂载AbilitySystem的接口
 {
 	GENERATED_BODY()
 
@@ -18,6 +19,7 @@ public:
 	ABaseCharacter();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
+	virtual int32 GetLevel() const override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

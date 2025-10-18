@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "GASTutorial/GASTutorial.h"
+#include "Net/UnrealNetwork.h"
 
 AEnemyCharacterBase::AEnemyCharacterBase()
 {
@@ -30,6 +31,11 @@ void AEnemyCharacterBase::UnHighLightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+int32 AEnemyCharacterBase::GetLevel() const
+{
+	return Level;
+}
+
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -42,3 +48,4 @@ void AEnemyCharacterBase::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }
+

@@ -19,8 +19,12 @@ public:
 	AEnemyCharacterBase();
 	virtual void HighLightActor() override;//纯虚函数覆写
 	virtual void UnHighLightActor() override;
+	virtual int32 GetLevel() const override;
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
+	
+	UPROPERTY(EditAnywhere ,BlueprintReadOnly,Category = "Character Class Default")
+	int32 Level=1;
 };

@@ -19,6 +19,9 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	
 	virtual void OnRep_PlayerState() override;
+
+	virtual int32 GetLevel() const override;
+	
 	
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent,Category="Test")
 	void Test(float BaseValue,float &Health,float &Mana);
