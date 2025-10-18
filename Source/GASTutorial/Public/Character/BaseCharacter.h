@@ -30,10 +30,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 	/*使用GameplayEffect来统一处理默认PrimaryAttribute值*/
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System")
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
-
-	void InitializePrimaryAttributes() const;
 	
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System|Attributes")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+	
+	void InitializeAttributes() const;
+	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const;
 	virtual void InitAbilityActorInfo();
 };

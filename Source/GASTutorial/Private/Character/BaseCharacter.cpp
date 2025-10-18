@@ -31,13 +31,20 @@ void ABaseCharacter::BeginPlay()
 	
 }
 
-void ABaseCharacter::InitializePrimaryAttributes() const
+void ABaseCharacter::InitializeAttributes() const
+{
+	ApplyGameplayEffectToSelf(DefaultPrimaryAttributes,1.f);
+	ApplyGameplayEffectToSelf(DefaultSecondaryAttributes,1.f);
+}
+
+void ABaseCharacter::ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const
 {
 	check(IsValid(GetAbilitySystemComponent()));
-	check(DefaultPrimaryAttributes);
+	check(GameplayEffect);
 	const FGameplayEffectContextHandle GECH = GetAbilitySystemComponent()->MakeEffectContext();
-	const FGameplayEffectSpecHandle GES = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryAttributes,1.0,GECH);
-	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*GES.Data.Get(),GetAbilitySystemComponent());	//const FGameplayEffectSpec &Spec, UAbilitySystemComponent *Target, FPredictionKey PredictionKey
+	const FGameplayEffectSpecHandle GES = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffect,Level,GECH);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*GES.Data.Get(),GetAbilitySystemComponent());
+	//const FGameplayEffectSpec &Spec, UAbilitySystemComponent *Target, FPredictionKey PredictionKey
 }
 
 void ABaseCharacter::InitAbilityActorInfo()

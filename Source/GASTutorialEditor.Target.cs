@@ -9,7 +9,7 @@ public class GASTutorialEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
-
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		ExtraModuleNames.AddRange( new string[] { "GASTutorial" } );
 	}
 }
