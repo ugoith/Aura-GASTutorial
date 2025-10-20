@@ -46,7 +46,8 @@ void ABaseCharacter::ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect
 {
 	check(IsValid(GetAbilitySystemComponent()));
 	check(GameplayEffect);
-	const FGameplayEffectContextHandle GECH = GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectContextHandle GECH = GetAbilitySystemComponent()->MakeEffectContext();
+	GECH.AddSourceObject(this);
 	const FGameplayEffectSpecHandle GES = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffect,Level,GECH);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*GES.Data.Get(),GetAbilitySystemComponent());
 	//const FGameplayEffectSpec &Spec, UAbilitySystemComponent *Target, FPredictionKey PredictionKey
