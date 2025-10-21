@@ -37,6 +37,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System|Attributes")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
 	void InitializeAttributes() const;
 	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const;

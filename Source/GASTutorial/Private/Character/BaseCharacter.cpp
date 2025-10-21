@@ -3,6 +3,7 @@
 
 #include "Character/BaseCharacter.h"
 #include "AbilitySystemComponent.h"
+
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -35,11 +36,12 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
+//子类PlayerCharacter的InitAbilityActorInfo()进行调用
 void ABaseCharacter::InitializeAttributes() const
 {
 	ApplyGameplayEffectToSelf(DefaultPrimaryAttributes,1.f);
 	ApplyGameplayEffectToSelf(DefaultSecondaryAttributes,1.f);
+	ApplyGameplayEffectToSelf(DefaultVitalAttributes,1.f);
 }
 
 void ABaseCharacter::ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const
