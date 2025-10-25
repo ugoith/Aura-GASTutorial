@@ -16,6 +16,7 @@ class GASTUTORIAL_API UAuraAbilitySystemComponent : public UAbilitySystemCompone
 {
 	GENERATED_BODY()
 public:
+	//在PlayerCharacterBase中的Possessed函数中完成初始化操作
 	void AbilityActorInfoSet();
 
 	FEffectAssetsTags EffectAssetsTags;
