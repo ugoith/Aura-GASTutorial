@@ -36,6 +36,7 @@ class GASTUTORIAL_API UAuraWidgetController : public UObject
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParam(const FWidgetControllerParam& WCParams);
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();
 protected:

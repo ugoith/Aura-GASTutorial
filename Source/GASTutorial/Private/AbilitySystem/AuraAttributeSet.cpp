@@ -4,20 +4,32 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "Engine/NetworkObjectList.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
+
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	UE_LOG(LogTemp,Warning,TEXT("InitProperty"));
-	InitHealth(75.0f);
-	InitMaxHealth(100.0f);
-	InitMana(75.0f);
-	InitMaxMana(100.0f);
+	//UE_LOG(LogTemp,Warning,TEXT("InitProperty"));
+	//InitHealth(75.0f);
+	//InitMaxHealth(100.0f);
+	//InitMana(75.0f);
+	//InitMaxMana(100.0f);
 	/*InitStrength(100.0f);
 	InitIntelligence(100.0f);
 	InitResilience(100.0f);*/
+	//拿到所有的标签
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	
+	//FAttributeSignature StrengthDelegate;
+	//StrengthDelegate.BindStatic(GetStrengthAttribute);
+	//TagToAttributes.Add(GameplayTags.Attribute_Primary_Intelligence, StrengthDelegate);
+	TagToAttributes.Add(GameplayTags.Attribute_Primary_Strength, GetStrengthAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Primary_Intelligence, GetIntelligenceAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Primary_Resilience, GetResilienceAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Primary_Vigor, GetVigorAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

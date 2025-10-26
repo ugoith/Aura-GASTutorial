@@ -8,7 +8,7 @@
 #include "AttributeInfo.generated.h"
 
 /**
- * 
+ * Model
  */
 USTRUCT(BlueprintType)
 struct FAuraAttributeInfo

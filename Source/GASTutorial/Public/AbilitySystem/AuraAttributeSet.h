@@ -18,6 +18,8 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+//DECLARE_DELEGATE_RetVal(FGameplayAttribute,FAttributeSignature);
+
 USTRUCT(BlueprintType)
 struct FEffectProperties
 {
@@ -44,6 +46,11 @@ struct FEffectProperties
 	ACharacter* TargetCharacter;
 };
 
+//typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
+//嵌套依赖类型, 需要使用typename
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T,FDefaultDelegateUserPolicy>::FFuncPtr;
+
 UCLASS()
 class GASTUTORIAL_API UAuraAttributeSet : public UAttributeSet
 {
@@ -56,6 +63,12 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	
+	//指向各个Attribute函数的函数指针,即ATTRIBUTE_ACCESSORS()中的所有Getter和Setter等;
+	//需要时,找到对应键值的函数指针后,调用即可
+	
+	TMap<FGameplayTag ,TStaticFuncPtr<FGameplayAttribute()>> TagToAttributes;
+	
 	/*
 	 * Primary Attributes
 	 */

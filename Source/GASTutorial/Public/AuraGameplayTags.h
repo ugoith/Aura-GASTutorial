@@ -12,6 +12,7 @@
 struct FAuraGameplayTags
 {
 public:
+	//单例模式
 	static const FAuraGameplayTags& Get(){ return GameplayTags; }
 	
 	static void InitializeNativeGameplayTags();
@@ -35,5 +36,6 @@ public:
 protected:
 	
 private:
+	//创建单例
 	static FAuraGameplayTags GameplayTags;
 };
