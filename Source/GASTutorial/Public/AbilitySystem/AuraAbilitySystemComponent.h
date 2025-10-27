@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+class UAuraGameplayAbility;
 /**
  * 
  */
@@ -20,6 +21,9 @@ public:
 	void AbilityActorInfoSet();
 
 	FEffectAssetsTags EffectAssetsTags;
+
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
 protected:
 	void EffectApplied(UAbilitySystemComponent* ASC,const FGameplayEffectSpec& EffectSpec ,FActiveGameplayEffectHandle ActiveEffectHandle);
+	
 };

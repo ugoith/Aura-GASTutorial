@@ -26,10 +26,24 @@ UAuraAttributeSet::UAuraAttributeSet()
 	//FAttributeSignature StrengthDelegate;
 	//StrengthDelegate.BindStatic(GetStrengthAttribute);
 	//TagToAttributes.Add(GameplayTags.Attribute_Primary_Intelligence, StrengthDelegate);
+
+	//Primary Attributes
 	TagToAttributes.Add(GameplayTags.Attribute_Primary_Strength, GetStrengthAttribute);
 	TagToAttributes.Add(GameplayTags.Attribute_Primary_Intelligence, GetIntelligenceAttribute);
 	TagToAttributes.Add(GameplayTags.Attribute_Primary_Resilience, GetResilienceAttribute);
 	TagToAttributes.Add(GameplayTags.Attribute_Primary_Vigor, GetVigorAttribute);
+
+	//Secondary Attributes
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_Armor, GetArmorAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_BlockChance, GetBlockChanceAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_ArmorPenetration, GetArmorPenetrationAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_CriticalHitDamage, GetCriticalHitDamageAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_CriticalHitResistance, GetCriticalHitResistanceAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagToAttributes.Add(GameplayTags.Attribute_Secondary_MaxMana, GetMaxManaAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

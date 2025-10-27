@@ -60,5 +60,12 @@ void ABaseCharacter::InitAbilityActorInfo()
 	
 }
 
+void ABaseCharacter::AddCharacterAbilities()
+{
+	if (!HasAuthority()) return;
+	AbilitySystemComponent->AddCharacterAbilities(StartUpAbilities);
+	
+}
+
 
 

@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "BaseCharacter.generated.h"
+class UAuraGameplayAbility;
 class UAttributeSet;
 UCLASS()
 class GASTUTORIAL_API ABaseCharacter : public ACharacter,public IAbilitySystemInterface,public ICombatInterface//挂载AbilitySystem的接口
@@ -44,4 +45,9 @@ protected:
 	void InitializeAttributes() const;
 	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const;
 	virtual void InitAbilityActorInfo();
+
+	void AddCharacterAbilities();
+private:
+	UPROPERTY(EditAnywhere,Category = "AbilitySystem|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
 };

@@ -27,6 +27,7 @@ void APlayerCharacterBase::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	//Init AbilityInfo For Server
 	InitAbilityActorInfo();
+	AddCharacterAbilities();
 }
 
 void APlayerCharacterBase::OnRep_PlayerState()

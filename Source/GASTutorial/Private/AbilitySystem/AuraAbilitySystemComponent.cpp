@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "AuraGameplayTags.h"
+#include "Character/BaseCharacter.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -12,8 +13,20 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 	//const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 }
 
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities)
+{
+	for (auto AbilityClass:Abilities)
+	{
+		ABaseCharacter* OwnerCharacter = Cast<ABaseCharacter>(GetAvatarActor());
+		int32 Level = OwnerCharacter->GetLevel();
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,Level);
+		//GiveAbility(AbilitySpec);
+		GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}
+
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec,
-	FActiveGameplayEffectHandle ActiveEffectHandle)
+                                                FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
