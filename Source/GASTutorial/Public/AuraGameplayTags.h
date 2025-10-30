@@ -12,7 +12,7 @@
 struct FAuraGameplayTags
 {
 public:
-	//单例模式
+	//单例模式,使用了静态函数,即全局只有此类的一个实例,用于管理游戏标签
 	static const FAuraGameplayTags& Get(){ return GameplayTags; }
 	
 	static void InitializeNativeGameplayTags();
@@ -33,9 +33,18 @@ public:
 	FGameplayTag Attribute_Secondary_CriticalHitResistance;
 	FGameplayTag Attribute_Secondary_HealthRegeneration;
 	FGameplayTag Attribute_Secondary_ManaRegeneration;
+	/*
+	 * InputTag
+	 */
+	FGameplayTag InputAction_LMB;
+	FGameplayTag InputAction_RMB;
+	FGameplayTag InputAction_1;
+	FGameplayTag InputAction_2;
+	FGameplayTag InputAction_3;
+	FGameplayTag InputAction_4;
 protected:
 	
 private:
-	//创建单例
+	//创建单例(声明)
 	static FAuraGameplayTags GameplayTags;
 };

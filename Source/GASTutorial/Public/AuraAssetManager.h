@@ -18,6 +18,6 @@ public:
 	static UAuraAssetManager& Get();
 
 protected:
-	
+	//引擎初始化加载时调用,完成游戏标签的添加
 	virtual void StartInitialLoading() override;
 };
