@@ -4,7 +4,7 @@
 #include "Player/PlayerControllerBase.h"
 
 #include "EnhancedInputSubsystems.h"
-#include"EnhancedInputComponent.h"
+#include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 APlayerControllerBase::APlayerControllerBase()
@@ -46,8 +46,9 @@ void APlayerControllerBase::BeginPlay()
 void APlayerControllerBase::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	UEnhancedInputComponent* EnhancedInputComponent=CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerControllerBase::Move);
+	UAuraInputComponent* AuraInputComponent=CastChecked<UAuraInputComponent>(InputComponent);
+	AuraInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerControllerBase::Move);
+	AuraInputComponent->BindAbilityActions(InputConfig,this,&ThisClass::AbilityInputTagPressed,&ThisClass::AbilityInputTagRelease,&ThisClass::AbilityInputTagHeld);
 }
 
 void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
@@ -58,10 +59,10 @@ void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
 	const FVector ForwardDirection=FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);//获取旋转的前向向量
 	const FVector RightDirection=FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	if (APawn* ControledPawn=GetPawn<APawn>())
+	if (APawn* ControlledPawn=GetPawn<APawn>())
 	{
-		ControledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
-		ControledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
+		ControlledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
+		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 	}
 }
 
@@ -102,4 +103,19 @@ void APlayerControllerBase::CursorTrace()
 	{
 		return;
 	}
+}
+
+void APlayerControllerBase::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1,3.f,FColor::Red,InputTag.ToString());
+}
+
+void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(2,3.f,FColor::Blue,InputTag.ToString());
+}
+
+void APlayerControllerBase::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(3,3.f,FColor::Yellow,InputTag.ToString());
 }
