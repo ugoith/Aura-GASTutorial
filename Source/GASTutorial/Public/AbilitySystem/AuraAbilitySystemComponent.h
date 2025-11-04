@@ -17,6 +17,11 @@ class GASTUTORIAL_API UAuraAbilitySystemComponent : public UAbilitySystemCompone
 {
 	GENERATED_BODY()
 public:
+
+	//Controller的Held、Released分别调用此Held、Released
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	
 	//在PlayerCharacterBase中的Possessed函数中完成初始化操作
 	void AbilityActorInfoSet();
 

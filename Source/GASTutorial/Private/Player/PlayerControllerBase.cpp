@@ -3,13 +3,20 @@
 
 #include "Player/PlayerControllerBase.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemInterface.h"
+#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 APlayerControllerBase::APlayerControllerBase()
 {
 	bReplicates = true;
+	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
+	
 }
 
 void APlayerControllerBase::PlayerTick(float DeltaTime)
@@ -48,6 +55,7 @@ void APlayerControllerBase::SetupInputComponent()
 	Super::SetupInputComponent();
 	UAuraInputComponent* AuraInputComponent=CastChecked<UAuraInputComponent>(InputComponent);
 	AuraInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerControllerBase::Move);
+	//将输入与标签进行绑定
 	AuraInputComponent->BindAbilityActions(InputConfig,this,&ThisClass::AbilityInputTagPressed,&ThisClass::AbilityInputTagRelease,&ThisClass::AbilityInputTagHeld);
 }
 
@@ -107,15 +115,63 @@ void APlayerControllerBase::CursorTrace()
 
 void APlayerControllerBase::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(1,3.f,FColor::Red,InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(1,3.f,FColor::Red,InputTag.ToString());
+	if(InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputAction_LMB))
+	{
+		//有点击Actor视为有目标，此时不移动，即AutoRunning为false
+		bTargeting = ThisActor ? true : false;
+		bAutoRunning = false;
+	}
+	
 }
 
 void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(2,3.f,FColor::Blue,InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(2,3.f,FColor::Blue,InputTag.ToString());
+	if (!GetASC()) return;
+	GetASC()->AbilityInputTagReleased(InputTag);
 }
 
 void APlayerControllerBase::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(3,3.f,FColor::Yellow,InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(3,3.f,FColor::Yellow,InputTag.ToString());
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputAction_LMB))
+	{
+		if (GetASC())
+			GetASC()->AbilityInputTagHeld(InputTag);
+		return;
+	}
+
+	if (bTargeting)
+	{
+		//点击到目标时激活能力
+		if (GetASC())
+			GetASC()->AbilityInputTagHeld(InputTag);
+	}
+	else
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+
+		FHitResult HitResult;
+		if (GetHitResultUnderCursor(ECC_Visibility,false,HitResult))
+		{
+			CachedDestination = HitResult.ImpactPoint;
+			
+		}
+		if (APawn* ControlPawn = GetPawn<APawn>())
+		{
+			//计算自身至终点的方向向量
+			const FVector WorldDirection = (CachedDestination - ControlPawn->GetActorLocation()).GetSafeNormal();
+			ControlPawn->AddMovementInput(WorldDirection);
+		}
+	}
+}
+
+UAuraAbilitySystemComponent* APlayerControllerBase::GetASC()
+{
+	if (!AuraAbilitySystemComponent)
+	{
+		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+	}
+	return AuraAbilitySystemComponent;
 }
