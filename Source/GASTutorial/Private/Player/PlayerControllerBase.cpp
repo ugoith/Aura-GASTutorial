@@ -7,6 +7,8 @@
 #include "AbilitySystemInterface.h"
 #include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
@@ -128,8 +130,44 @@ void APlayerControllerBase::AbilityInputTagPressed(FGameplayTag InputTag)
 void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 {
 	//GEngine->AddOnScreenDebugMessage(2,3.f,FColor::Blue,InputTag.ToString());
-	if (!GetASC()) return;
-	GetASC()->AbilityInputTagReleased(InputTag);
+	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputAction_LMB))
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+		return;
+	}
+	if (bTargeting)
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+	}
+	else
+	{
+		APawn* ControlPawn = GetPawn<APawn>();
+		if (FollowTime <= ShortPressThreshold && ControlPawn)
+		{
+			//生成对应导航路线,用于生成的样条线Spline
+			if (UNavigationPath* Path = UNavigationSystemV1::FindPathToLocationSynchronously(this,ControlPawn->GetActorLocation(),CachedDestination))
+			{
+				Spline->ClearSplinePoints();
+				for (const FVector& PointLoc : Path->PathPoints)
+				{	//添加路线点
+					Spline->AddSplinePoint(PointLoc,ESplineCoordinateSpace::World);
+					DrawDebugSphere(GetWorld(),PointLoc,8.f,8,FColor::Green,false,5.f);
+				}
+				bAutoRunning = true;
+			}
+			
+		}
+		//重置跟随时间
+		FollowTime = 0.f;
+		
+	}
+	
 }
 
 void APlayerControllerBase::AbilityInputTagHeld(FGameplayTag InputTag)
