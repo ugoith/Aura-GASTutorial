@@ -25,6 +25,27 @@ void APlayerControllerBase::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
+	AutoRun();
+}
+
+void APlayerControllerBase::AutoRun()
+{
+	if (!bAutoRunning) return;
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		//寻找自身距离样条线最近的点
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace:: World);
+		//在点的位置寻找最贴近样条线的方向 
+		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(LocationOnSpline,ESplineCoordinateSpace::World);
+		ControlledPawn->AddMovementInput(Direction);
+		//计算与目标点的距离
+		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+		if (DistanceToDestination <= AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+			
+		}
+	}
 }
 
 void APlayerControllerBase::BeginPlay()
@@ -159,6 +180,7 @@ void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 					Spline->AddSplinePoint(PointLoc,ESplineCoordinateSpace::World);
 					DrawDebugSphere(GetWorld(),PointLoc,8.f,8,FColor::Green,false,5.f);
 				}
+				CachedDestination = Path->PathPoints[Path->PathPoints.Num()-1];
 				bAutoRunning = true;
 			}
 			
@@ -213,3 +235,5 @@ UAuraAbilitySystemComponent* APlayerControllerBase::GetASC()
 	}
 	return AuraAbilitySystemComponent;
 }
+
+
