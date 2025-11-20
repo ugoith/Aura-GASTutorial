@@ -51,26 +51,31 @@ void APlayerControllerBase::AutoRun()
 void APlayerControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
-	check(AuraContext);
-	ULocalPlayer* LocalPlayer=GetLocalPlayer();
-	check(LocalPlayer);
-	UEnhancedInputLocalPlayerSubsystem* Subsystem=LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	//获取增强输入本地玩家子系统
+	//代码运行的设备是否与Controller所属的设备一致（监听服务器，客户端）
+	if (IsLocalController())
+	{
+		check(AuraContext);
+		ULocalPlayer* LocalPlayer=GetLocalPlayer();
+		check(LocalPlayer);
+		UEnhancedInputLocalPlayerSubsystem* Subsystem=LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		//获取增强输入本地玩家子系统
 
-	check(Subsystem);
-	Subsystem->AddMappingContext(AuraContext,0);//将设置好的InputMappingContext加入到增强输入子系统的映射背景（上下文）
+		check(Subsystem);
+		Subsystem->AddMappingContext(AuraContext,0);//将设置好的InputMappingContext加入到增强输入子系统的映射背景（上下文）
 
-	bShowMouseCursor=true;//总是显示鼠标游标
-	DefaultMouseCursor=EMouseCursor::Default;
-	/*EMouseCursor::Default：默认箭头光标（最常用的箭头样式）
-	EMouseCursor::Hand：手型光标（通常用于可点击交互元素）
-	EMouseCursor::TextEditBeam：文本输入时的竖线光标
-	EMouseCursor::ResizeLeftRight：左右调整大小的光标*/
+		bShowMouseCursor=true;//总是显示鼠标游标
+		DefaultMouseCursor=EMouseCursor::Default;
+		/*EMouseCursor::Default：默认箭头光标（最常用的箭头样式）
+		EMouseCursor::Hand：手型光标（通常用于可点击交互元素）
+		EMouseCursor::TextEditBeam：文本输入时的竖线光标
+		EMouseCursor::ResizeLeftRight：左右调整大小的光标*/
 
-	FInputModeGameAndUI InputModeData;
-	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);//游标不锁定至视口,方便调试
-	InputModeData.SetHideCursorDuringCapture(false);//鼠标按下时,不隐藏游标
-	SetInputMode(InputModeData);
+		FInputModeGameAndUI InputModeData;
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);//游标不锁定至视口,方便调试
+		InputModeData.SetHideCursorDuringCapture(false);//鼠标按下时,不隐藏游标
+		SetInputMode(InputModeData);
+	}
+	
 }
 
 void APlayerControllerBase::SetupInputComponent()
