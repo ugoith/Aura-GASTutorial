@@ -99,43 +99,19 @@ void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
 
 void APlayerControllerBase::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility,false,CursorHit);
 	if (CursorHit.bBlockingHit)
 	{
 		LastActor=ThisActor;//两个变量都是IEnemyInterface指针。记录上一个Actor的EnemyInterface指针
 		ThisActor=Cast<IEnemyInterface>(CursorHit.GetActor());
-		if (LastActor==nullptr)
+		if (LastActor!=ThisActor)
 		{
-			if (ThisActor!=nullptr)
-			{
-				ThisActor->HighLightActor();//挂载接口的纯虚函数,即调用该Actor实现的接口函数
-			}
+			if (LastActor) LastActor->UnHighLightActor();
+			if (ThisActor)	ThisActor->HighLightActor();
 		}
-		else
-		{
-			if (ThisActor==nullptr)
-			{
-				LastActor->UnHighLightActor();
-			}
 			
-			else if (ThisActor!=nullptr)
-			{
-				if (LastActor!=ThisActor)
-				{
-					LastActor->UnHighLightActor();
-					ThisActor->HighLightActor();
-				}
-			}
-			
-		}
-	}
-	else
-	{
-		return;
 	}
 }
-
 void APlayerControllerBase::AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	//GEngine->AddOnScreenDebugMessage(1,3.f,FColor::Red,InputTag.ToString());
@@ -154,17 +130,13 @@ void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 	if(!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputAction_LMB))
 	{
 		if (GetASC())
-		{
-			GetASC()->AbilityInputTagReleased(InputTag);
-		}
+		GetASC()->AbilityInputTagReleased(InputTag);
 		return;
 	}
 	if (bTargeting)
 	{
 		if (GetASC())
-		{
-			GetASC()->AbilityInputTagReleased(InputTag);
-		}
+		GetASC()->AbilityInputTagReleased(InputTag);
 	}
 	else
 	{
@@ -212,10 +184,10 @@ void APlayerControllerBase::AbilityInputTagHeld(FGameplayTag InputTag)
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
 
-		FHitResult HitResult;
-		if (GetHitResultUnderCursor(ECC_Visibility,false,HitResult))
+		//FHitResult HitResult;
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = HitResult.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 			
 		}
 		if (APawn* ControlPawn = GetPawn<APawn>())
