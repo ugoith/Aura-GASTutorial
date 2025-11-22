@@ -30,6 +30,11 @@ int32 ABaseCharacter::GetLevel () const
 	return 0;
 }
 
+FVector ABaseCharacter::GetCombatSocketLocation()
+{	//check(Weapon);
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {

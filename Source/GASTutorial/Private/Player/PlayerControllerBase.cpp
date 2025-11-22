@@ -155,7 +155,7 @@ void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 				for (const FVector& PointLoc : Path->PathPoints)
 				{	//添加路线点
 					Spline->AddSplinePoint(PointLoc,ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(),PointLoc,8.f,8,FColor::Green,false,5.f);
+					//DrawDebugSphere(GetWorld(),PointLoc,8.f,8,FColor::Green,false,5.f);
 				}
 				CachedDestination = Path->PathPoints[Path->PathPoints.Num()-1];
 				bAutoRunning = true;

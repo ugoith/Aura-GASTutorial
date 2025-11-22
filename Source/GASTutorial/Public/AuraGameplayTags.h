@@ -42,6 +42,8 @@ public:
 	FGameplayTag InputAction_2;
 	FGameplayTag InputAction_3;
 	FGameplayTag InputAction_4;
+	// Event
+	FGameplayTag Event_Montage_FireBolt;
 protected:
 	
 private:

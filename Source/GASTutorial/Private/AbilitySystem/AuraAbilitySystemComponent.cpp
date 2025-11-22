@@ -45,7 +45,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		ABaseCharacter* OwnerCharacter = Cast<ABaseCharacter>(GetAvatarActor());
 		int32 Level = OwnerCharacter->GetLevel();
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,Level);
-		
+
+		//Ability必须为AuraGameplayAbility的子类
 		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability) )
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);//添加能力标签

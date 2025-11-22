@@ -24,4 +24,6 @@ class GASTUTORIAL_API ICombatInterface
 public:
 
 	virtual int32 GetLevel() const  = 0 ;
+
+	virtual FVector GetCombatSocketLocation();
 };
