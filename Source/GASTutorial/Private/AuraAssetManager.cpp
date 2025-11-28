@@ -2,6 +2,8 @@
 
 
 #include "AuraAssetManager.h"
+
+#include "AbilitySystemGlobals.h"
 #include "AuraGameplayTags.h"
 UAuraAssetManager& UAuraAssetManager::Get()
 {
@@ -15,4 +17,6 @@ void UAuraAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 	//初始化时使用下方函数实现的AddNativeGameplayTags来进行添加游戏标签
 	FAuraGameplayTags::InitializeNativeGameplayTags();
+	UAbilitySystemGlobals::Get().InitGlobalData();
+	
 }
