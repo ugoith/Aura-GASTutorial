@@ -83,6 +83,9 @@ void APlayerControllerBase::SetupInputComponent()
 	Super::SetupInputComponent();
 	UAuraInputComponent* AuraInputComponent=CastChecked<UAuraInputComponent>(InputComponent);
 	AuraInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this,&APlayerControllerBase::Move);
+	AuraInputComponent->BindAction(ShiftAction,ETriggerEvent::Started,this,&APlayerControllerBase::ShiftPressed);
+	AuraInputComponent->BindAction(ShiftAction,ETriggerEvent::Completed,this,&APlayerControllerBase::ShiftReleased);
+	
 	//将输入与标签进行绑定
 	AuraInputComponent->BindAbilityActions(InputConfig,this,&ThisClass::AbilityInputTagPressed,&ThisClass::AbilityInputTagRelease,&ThisClass::AbilityInputTagHeld);
 }
@@ -100,6 +103,16 @@ void APlayerControllerBase::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(ForwardDirection,InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection,InputAxisVector.X);
 	}
+}
+
+void APlayerControllerBase::ShiftPressed(const FInputActionValue& InputActionValue)
+{
+	bShiftPressed=true;
+}
+
+void APlayerControllerBase::ShiftReleased(const FInputActionValue& InputActionValue)
+{
+	bShiftPressed=false;
 }
 
 void APlayerControllerBase::CursorTrace()
@@ -138,12 +151,10 @@ void APlayerControllerBase::AbilityInputTagRelease(FGameplayTag InputTag)
 		GetASC()->AbilityInputTagReleased(InputTag);
 		return;
 	}
-	if (bTargeting)
-	{
-		if (GetASC())
+	if (GetASC())
 		GetASC()->AbilityInputTagReleased(InputTag);
-	}
-	else
+	
+	if (!bTargeting&&!bShiftPressed)
 	{
 		APawn* ControlPawn = GetPawn<APawn>();
 		if (FollowTime <= ShortPressThreshold && ControlPawn)
@@ -179,7 +190,7 @@ void APlayerControllerBase::AbilityInputTagHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	if (bTargeting)
+	if (bTargeting||bShiftPressed)
 	{
 		//点击到目标时激活能力
 		if (GetASC())

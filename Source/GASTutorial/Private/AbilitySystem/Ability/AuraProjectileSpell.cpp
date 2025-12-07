@@ -14,7 +14,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 }
 
-void UAuraProjectileSpell::SpawnProjectile()
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
 	
 	//确定自己是否在服务器
@@ -29,8 +29,10 @@ void UAuraProjectileSpell::SpawnProjectile()
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SpawnSocketLocation);
-		//TODO： 设置生成的发射物旋转
-		
+		//设置生成的发射物旋转
+		FRotator Rotation = (ProjectileTargetLocation - SpawnSocketLocation).Rotation();
+		Rotation.Pitch = 0.f;
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
 			SpawnTransform,

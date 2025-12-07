@@ -35,8 +35,16 @@ private:
 
     UPROPERTY(EditAnywhere,Category="Input")
 	TObjectPtr<UInputAction> MoveAction;
-
+	
 	void Move(const FInputActionValue& InputActionValue);
+
+	//非瞄准敌人时，Shift按下会发射火球
+	UPROPERTY(EditAnywhere,Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
+	void ShiftPressed(const FInputActionValue& InputActionValue);
+	void ShiftReleased(const FInputActionValue& InputActionValue);
+	bool bShiftPressed = false;
+	
 	FHitResult CursorHit;
 	TObjectPtr<IEnemyInterface> LastActor;
 	TObjectPtr<IEnemyInterface> ThisActor;//若有报错，则使用IEnemyInterface* 
