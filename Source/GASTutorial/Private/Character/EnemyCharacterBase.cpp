@@ -20,9 +20,9 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 void AEnemyCharacterBase::HighLightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->CustomDepthStencilValue=CUSTOM_DEPTH_RED;
+	GetMesh()->CustomDepthStencilValue = CUSTOM_DEPTH_RED;
 	Weapon->SetRenderCustomDepth(true);
-	Weapon->CustomDepthStencilValue=CUSTOM_DEPTH_RED;
+	Weapon->CustomDepthStencilValue = CUSTOM_DEPTH_RED;
 }
 
 void AEnemyCharacterBase::UnHighLightActor()
@@ -40,6 +40,7 @@ void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilityActorInfo();
+	
 }
 
 void AEnemyCharacterBase::InitAbilityActorInfo()

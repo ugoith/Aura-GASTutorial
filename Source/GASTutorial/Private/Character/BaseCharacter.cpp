@@ -4,6 +4,7 @@
 #include "Character/BaseCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GASTutorial/GASTutorial.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -12,6 +13,8 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile,ECR_Overlap);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 	
 	Weapon=CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");//创建一个名为Weapon的骨骼网格体组件
 	Weapon->SetupAttachment(GetMesh(),FName("WeaponHandSocket"));//附加到父级（首个骨骼网格体）的名为WeaponHandSocket的插槽中

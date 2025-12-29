@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraSystem.h"
 #include "AuraProjectile.generated.h"
 
 class UPrimitiveComponent;
 struct FHitResult;
 class USphereComponent;
 class UProjectileMovementComponent;
+
 
 UCLASS()
 class GASTUTORIAL_API AAuraProjectile : public AActor
@@ -44,4 +46,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> LoopSpawnSound;
+
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpan = 15.f;
 };
