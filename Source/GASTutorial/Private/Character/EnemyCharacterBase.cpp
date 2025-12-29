@@ -40,7 +40,7 @@ void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilityActorInfo();
-	
+
 }
 
 void AEnemyCharacterBase::InitAbilityActorInfo()
@@ -48,5 +48,6 @@ void AEnemyCharacterBase::InitAbilityActorInfo()
 	//check(AbilitySystemComponent);//拥有者和发起者(Avatar，也即Instigator)都是自己
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+	InitializeAttributes();
 }
 

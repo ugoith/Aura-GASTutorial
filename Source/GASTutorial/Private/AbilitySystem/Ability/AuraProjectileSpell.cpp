@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Ability/AuraProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -40,7 +42,8 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			Cast<APawn>(GetAvatarActorFromActorInfo()),ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		//TODO: 命中敌人后造成伤害
-		
+		const UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		Projectile->DamageEffectSpecHandle = ASC->MakeOutgoingSpec(AuraDamageEffect,GetAbilityLevel(),ASC->MakeEffectContext());
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
