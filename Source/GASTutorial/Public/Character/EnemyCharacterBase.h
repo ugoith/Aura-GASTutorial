@@ -3,10 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Character/BaseCharacter.h"
-#include"Interaction/EnemyInterface.h"
+#include "Interaction/EnemyInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "EnemyCharacterBase.generated.h"
 
+enum class ECharacterClass : uint8;
+class UWidgetComponent;
 /**
  * 
  */
@@ -20,11 +24,32 @@ public:
 	virtual void HighLightActor() override;//纯虚函数覆写
 	virtual void UnHighLightActor() override;
 	virtual int32 GetLevel() const override;
+	
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> HealthBar;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthChanged;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "CharacterClass")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
+
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
+
+	virtual void InitializeAttributes() const override;
+
 	
 	UPROPERTY(EditAnywhere ,BlueprintReadOnly,Category = "Character Class Default")
 	int32 Level=1;
+
+private:
+	void BroadcastAttributeChanged();
 };

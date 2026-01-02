@@ -41,6 +41,12 @@ FVector ABaseCharacter::GetCombatSocketLocation()
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
+UAnimMontage* ABaseCharacter::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {

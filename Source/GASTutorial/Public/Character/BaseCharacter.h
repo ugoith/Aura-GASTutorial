@@ -22,6 +22,7 @@ public:
 	UAttributeSet* GetAttributeSet() const;
 	virtual int32 GetLevel() const override;
 	virtual FVector GetCombatSocketLocation() override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -46,7 +47,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category = "Ability System|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
-	void InitializeAttributes() const;
+	virtual void InitializeAttributes() const;
 	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& GameplayEffect,float Level) const;
 	virtual void InitAbilityActorInfo();
 
@@ -54,4 +55,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere,Category = "AbilitySystem|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;
+
+	UPROPERTY(EditDefaultsOnly,Category = "AbilitySystem|Abilities")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

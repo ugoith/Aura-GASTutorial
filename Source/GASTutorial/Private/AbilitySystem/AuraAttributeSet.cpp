@@ -141,6 +141,22 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	{
 		SetMana(FMath::Clamp(GetMana(),0,GetMaxMana()));
 	}
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		if (LocalIncomingDamage > 0)
+		{
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth,0,GetMaxHealth() ) );
+
+			const bool bFatal = NewHealth <= 0.f;
+			if (bFatal) return;
+			FGameplayTagContainer GameplayTags;
+			GameplayTags.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+			Data.Target.TryActivateAbilitiesByTag(GameplayTags);
+		}
+	}
 }
 //@Region:PrimaryAttributes
 void UAuraAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const

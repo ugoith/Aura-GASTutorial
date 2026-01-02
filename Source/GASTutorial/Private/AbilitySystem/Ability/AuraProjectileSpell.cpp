@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -41,9 +42,12 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetAvatarActorFromActorInfo()),ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		//TODO: 命中敌人后造成伤害
+		// 命中敌人后造成伤害
 		const UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get(); 
 		Projectile->DamageEffectSpecHandle = ASC->MakeOutgoingSpec(AuraDamageEffect,GetAbilityLevel(),ASC->MakeEffectContext());
+		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());//ScaledDamage
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle,GameplayTags.Damage,ScaledDamage);
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

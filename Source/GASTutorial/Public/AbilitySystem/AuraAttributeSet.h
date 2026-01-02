@@ -178,6 +178,13 @@ public:
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
+	/*
+	 * Meta Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly,Category = "Meta Attribute")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,IncomingDamage);
+	
 private:
 
 	void SetFEffectProperties(const struct FGameplayEffectModCallbackData& Data , FEffectProperties& Props) const ;

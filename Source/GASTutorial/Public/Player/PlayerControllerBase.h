@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
+#include "InputMappingContext.h"
 #include "PlayerControllerBase.generated.h"
 
 class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UAuraInputConfig;
-class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
@@ -46,8 +46,8 @@ private:
 	bool bShiftPressed = false;
 	
 	FHitResult CursorHit;
-	TObjectPtr<IEnemyInterface> LastActor;
-	TObjectPtr<IEnemyInterface> ThisActor;//若有报错，则使用IEnemyInterface* 
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;//若有报错，则使用IEnemyInterface* 
 	void CursorTrace();
 
 	//执行对应拥有者ASC的函数

@@ -8,13 +8,12 @@ public class GASTutorial : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"EnhancedInput","GameplayAbilities"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"EnhancedInput","GameplayAbilities","UMG"});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayTags","GameplayTasks", "OpenSubdiv","NavigationSystem","Niagara" /*,"UnLua","Lua" */});
-	
+		PrivateDependencyModuleNames.AddRange(new string[] {"GameplayTags","GameplayTasks", "OpenSubdiv","NavigationSystem","Niagara" });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 

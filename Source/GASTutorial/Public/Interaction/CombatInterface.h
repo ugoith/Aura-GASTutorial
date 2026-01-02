@@ -29,4 +29,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable,Category = "MotionWarping")
 	void UpdateFacingTarget(const FVector& Target);
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category = "CombatInterface|AnimMontage")
+	UAnimMontage* GetHitReactMontage();
 };

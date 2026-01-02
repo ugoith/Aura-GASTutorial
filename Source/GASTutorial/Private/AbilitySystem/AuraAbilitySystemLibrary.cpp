@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -39,4 +40,32 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 		}
 	}
 	return nullptr;
+}
+
+void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,
+	ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject) );
+	if (!AuraGameMode) return;
+	FCharacterClassDefaultInfo* CharacterClassDefaultInfo = AuraGameMode->CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	FGameplayEffectContextHandle GECH = ASC->MakeEffectContext();
+	GECH.AddSourceObject(WorldContextObject);
+	const FGameplayEffectSpecHandle PrimaryGESH = ASC->MakeOutgoingSpec(CharacterClassDefaultInfo->PrimaryAttributes,Level,GECH);
+	ASC->ApplyGameplayEffectSpecToSelf(*PrimaryGESH.Data.Get());
+	const FGameplayEffectSpecHandle SecondaryGESH = ASC->MakeOutgoingSpec(AuraGameMode->CharacterClassInfo->SecondaryAttributes,Level,GECH);
+	ASC->ApplyGameplayEffectSpecToSelf(*SecondaryGESH.Data.Get());
+	const FGameplayEffectSpecHandle VitalGESH = ASC->MakeOutgoingSpec(AuraGameMode->CharacterClassInfo->VitalAttributes,Level,GECH);
+	ASC->ApplyGameplayEffectSpecToSelf(*VitalGESH.Data.Get());
+}
+
+void UAuraAbilitySystemLibrary::GiveStartUpAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject) );
+	if (!AuraGameMode) return;
+
+	 for (TSubclassOf<UGameplayAbility> Ability : AuraGameMode->CharacterClassInfo->CommonAbilities)
+	 {
+	 	FGameplayAbilitySpec(Ability,1.0);
+		 ASC->GiveAbility(Ability);
+	 }
 }

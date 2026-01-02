@@ -44,6 +44,9 @@ public:
 	FGameplayTag InputAction_4;
 	// Event
 	FGameplayTag Event_Montage_FireBolt;
+
+	FGameplayTag Damage;
+	FGameplayTag Effects_HitReact;
 protected:
 	
 private:
