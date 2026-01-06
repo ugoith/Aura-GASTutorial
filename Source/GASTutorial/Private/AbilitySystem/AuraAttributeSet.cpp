@@ -7,6 +7,7 @@
 #include "AuraGameplayTags.h"
 #include "Engine/NetworkObjectList.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -151,10 +152,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			SetHealth(FMath::Clamp(NewHealth,0,GetMaxHealth() ) );
 
 			const bool bFatal = NewHealth <= 0.f;
-			if (bFatal) return;
-			FGameplayTagContainer GameplayTags;
-			GameplayTags.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-			Data.Target.TryActivateAbilitiesByTag(GameplayTags);
+			if (bFatal)
+			{
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Data.Target.GetOwnerActor());
+				if (CombatInterface)
+				CombatInterface->Die();
+			}
+			else
+			{
+				FGameplayTagContainer GameplayTags;
+				GameplayTags.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				Data.Target.TryActivateAbilitiesByTag(GameplayTags);
+			}
+			
 		}
 	}
 }

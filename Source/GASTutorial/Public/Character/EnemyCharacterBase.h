@@ -39,6 +39,9 @@ public:
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Combat")
+	float LifeSpan = 5.f;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -46,7 +49,7 @@ protected:
 
 	virtual void InitializeAttributes() const override;
 
-	
+	virtual void Die() override;
 	UPROPERTY(EditAnywhere ,BlueprintReadOnly,Category = "Character Class Default")
 	int32 Level=1;
 

@@ -77,6 +77,13 @@ void AEnemyCharacterBase::InitializeAttributes() const
 	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClass,Level,GetAbilitySystemComponent());
 }
 
+void AEnemyCharacterBase::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+	
+}
+
 void AEnemyCharacterBase::BroadcastAttributeChanged()
 {
 	const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet);

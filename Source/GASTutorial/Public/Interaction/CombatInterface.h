@@ -32,4 +32,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category = "CombatInterface|AnimMontage")
 	UAnimMontage* GetHitReactMontage();
+
+	virtual void Die() = 0 ;
 };

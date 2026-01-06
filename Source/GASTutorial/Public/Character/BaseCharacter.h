@@ -23,6 +23,9 @@ public:
 	virtual int32 GetLevel() const override;
 	virtual FVector GetCombatSocketLocation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+	UFUNCTION(NetMulticast,Reliable)
+	virtual void MulticastHandleDeath();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -52,6 +55,19 @@ protected:
 	virtual void InitAbilityActorInfo();
 
 	void AddCharacterAbilities();
+	
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "MaterialInstance")
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "MaterialInstance")
+	TObjectPtr<UMaterialInstance> WeaponMaterialInstance;
 private:
 	UPROPERTY(EditAnywhere,Category = "AbilitySystem|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartUpAbilities;

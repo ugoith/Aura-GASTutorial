@@ -46,6 +46,28 @@ UAnimMontage* ABaseCharacter::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+void ABaseCharacter::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld,true));
+	MulticastHandleDeath();
+}
+
+void ABaseCharacter::MulticastHandleDeath_Implementation()
+{
+	Weapon->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Dissolve();
+}
+
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
@@ -82,6 +104,22 @@ void ABaseCharacter::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 	AbilitySystemComponent->AddCharacterAbilities(StartUpAbilities);
 	
+}
+
+void ABaseCharacter::Dissolve()
+{
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MaterialInsDy = UMaterialInstanceDynamic::Create(DissolveMaterialInstance,this);
+		GetMesh()->SetMaterial(0, MaterialInsDy);
+		StartDissolveTimeline(MaterialInsDy);
+	}
+	if (IsValid(WeaponMaterialInstance))
+	{
+		UMaterialInstanceDynamic* WeaponMaterialInsDy = UMaterialInstanceDynamic::Create(WeaponMaterialInstance,this);
+		Weapon->SetMaterial(0,WeaponMaterialInsDy);
+		StartWeaponDissolveTimeline(WeaponMaterialInsDy);
+	}
 }
 
 
