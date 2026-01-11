@@ -8,7 +8,9 @@
 #include "Engine/NetworkObjectList.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/PlayerControllerBase.h"
 
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -119,6 +121,20 @@ void UAuraAttributeSet::SetFEffectProperties(const struct FGameplayEffectModCall
 	}
 	
 }
+
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage)
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		APlayerControllerBase* PC =	Cast<APlayerControllerBase>(UGameplayStatics::GetPlayerController(Props.SourceCharacter,0));
+		if (PC)
+		{
+			PC->ShowDamageText(Damage,Props.TargetCharacter);
+		}
+	}
+}
+
+
 /*当一个 GameplayEffect (GE) 修改了 AttributeSet 中的属性后，这个回调会被触发。
 * AbilitySystemComponent 应用了某个 GameplayEffect（比如 GE_Damage，减少角色生命值）。
 GameplayEffectSpec 会修改 AttributeSet 里的某个属性（比如 Health）。
@@ -151,7 +167,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth,0,GetMaxHealth() ) );
 
-			const bool bFatal = NewHealth <= 0.f;
+			const bool bFatal = NewHealth <= 0.f; //是否死亡 
 			if (bFatal)
 			{
 				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Data.Target.GetOwnerActor());
@@ -164,7 +180,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				GameplayTags.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 				Data.Target.TryActivateAbilitiesByTag(GameplayTags);
 			}
-			
+			ShowFloatingText(Props,LocalIncomingDamage);
 		}
 	}
 }
