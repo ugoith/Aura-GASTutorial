@@ -4,15 +4,18 @@
 #include "CalcExec/CalcExec_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 struct AuraDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	AuraDamageStatics()
 	{	//false为不快照，需要结合当下的Armor值进行计算，因为在火球命中敌人前可能会被附加一些Armor减弱的Debuff，根据这里被减弱的Armor进行计算受伤后的逻辑
 		//这里的宏用于定义捕获规则  从哪个属性集里拿，拿哪个属性，从哪个目标身上拿，是否是实时的数据 false 实时，true非实时
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet,Armor,Target,false); 
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet,BlockChance,Target,false);
 	}
 };
 
@@ -25,6 +28,7 @@ static const AuraDamageStatics& DamageStatics()
 UCalcExec_Damage::UCalcExec_Damage()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
 }
 
 void UCalcExec_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -42,10 +46,15 @@ void UCalcExec_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	FAggregatorEvaluateParameters EvaluateParameters;
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
-	float Armor = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef,EvaluateParameters,Armor);
-	++Armor;
-
-	FGameplayModifierEvaluatedData EvaluatedData(DamageStatics().ArmorProperty,EGameplayModOp::Additive,Armor);
+	
+	float TargetBlockChance = 0.f;
+	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef,EvaluateParameters,TargetBlockChance);
+	TargetBlockChance = FMath::Max<float>(TargetBlockChance,0.f);
+	const bool bBlock = FMath::RandRange(1.f,100.f) < TargetBlockChance;
+	Damage = bBlock ? Damage / 2.f : Damage;
+	
+	FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(),EGameplayModOp::Additive,Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
+
 }
