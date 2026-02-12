@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Engine/NetworkObjectList.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
@@ -83,7 +84,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute==GetManaAttribute())
 		NewValue=FMath::Clamp(NewValue,0,GetMaxMana());
 }
-void UAuraAttributeSet::SetFEffectProperties(const struct FGameplayEffectModCallbackData& Data,
+void UAuraAttributeSet::SetEffectProperties(const struct FGameplayEffectModCallbackData& Data,
 	FEffectProperties& Props) const
 {
 	//Data → 当前正在执行的 属性修改回调（比如血量减少）。
@@ -122,7 +123,7 @@ void UAuraAttributeSet::SetFEffectProperties(const struct FGameplayEffectModCall
 	
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage)
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage , bool bBlockedHit ,bool bCriticalHit)
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
@@ -149,7 +150,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	Super::PostGameplayEffectExecute(Data);
 	FEffectProperties Props;
 	//存相关变化的参数和对应的拥有者、控制器、AbilitySystem等
-	SetFEffectProperties(Data,Props);
+	SetEffectProperties(Data,Props);
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(),0,GetMaxHealth()));
@@ -180,7 +181,9 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				GameplayTags.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 				Data.Target.TryActivateAbilitiesByTag(GameplayTags);
 			}
-			ShowFloatingText(Props,LocalIncomingDamage);
+			
+			ShowFloatingText(Props,LocalIncomingDamage,UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle)
+				,UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle));
 		}
 	}
 }

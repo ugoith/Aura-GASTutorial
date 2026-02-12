@@ -125,7 +125,7 @@ public:
 	FGameplayAttributeData CriticalHitChance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet,CriticalHitChance);
 	UFUNCTION()
-	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChange) const;
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;
 
 	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_CriticalHitDamage,Category="Secondary Attribute")
 	FGameplayAttributeData CriticalHitDamage;
@@ -187,6 +187,6 @@ public:
 	
 private:
 
-	void SetFEffectProperties(const struct FGameplayEffectModCallbackData& Data , FEffectProperties& Props) const ;
-	void ShowFloatingText(const FEffectProperties& Props,float Damage);
+	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data , FEffectProperties& Props) const ;
+	void ShowFloatingText(const FEffectProperties& Props,float Damage, bool bBlockedHit = false ,bool bCriticalHit = false);
 };
